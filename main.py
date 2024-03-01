@@ -3,7 +3,6 @@ import requests
 import yaml
 import os
 
-
 def dump_cluster_license(es_url, user, password, ca, insecure):
     """This function takes 3 arguments as input: an url, a user, and a password."""
     # set tls parameters for queries
@@ -26,7 +25,7 @@ def dump_cluster_license(es_url, user, password, ca, insecure):
 
    # Create a dictionary with the results of both API calls.
     data = {
-        "total number of licenses used by the cluster": sum(1 if any(role in node["roles"] for role in ["data", "data_hot", "data_warm", "data_cold", "data_content", "ml", "master"]) else 0 for node in response_nodes.json()["nodes"].values()),
+        "billable nodes in the cluster": sum(1 if any(role in node["roles"] for role in ["data", "data_hot", "data_warm", "data_cold", "data_content", "ml", "master"]) else 0 for node in response_nodes.json()["nodes"].values()),
         "license": response.json()["license"],
         "nodes": {
             "_nodes": response_nodes.json()["_nodes"],
@@ -56,7 +55,7 @@ def consolidate_cluster_info():
     # Create a dictionary to store the consolidated license usage.
     consolidated_license_usage = {
         "list of audited clusters": [],
-        "total number of licenses used": 0
+        "Total number of billable nodes": 0
     }
 
     # Loop through the .yml files and add their data to the consolidated license usage dictionary.
@@ -69,8 +68,8 @@ def consolidate_cluster_info():
             # Add the basename of the .yml file to the list of audited clusters.
             consolidated_license_usage["list of audited clusters"].append(os.path.splitext(os.path.basename(file))[0])
 
-            # Add the total number of licenses used by the cluster to the total number of licenses used.
-            consolidated_license_usage["total number of licenses used"] += data["total number of licenses used by the cluster"]
+            # Add the billable nodes in the cluster to the total number of licenses used.
+            consolidated_license_usage["Total number of billable nodes"] += data["billable nodes in the cluster"]
 
     # Write the consolidated license usage to a YAML file.
     with open("consolidated_license_usage.yaml", "w") as f:

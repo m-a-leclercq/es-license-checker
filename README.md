@@ -1,6 +1,6 @@
 # es-license-checker
 This python script allows elasticsearch customers to get an accurate inventory of how many licenses their clusters are using for platinum licenses.
-This script will not work for Enterprise customers as it calculates nodes and not Enterprise Resource Units.
+*This script will not work for Enterprise customers as it calculates nodes and not Enterprise Resource Units.*
 
 # Installation
 Create a new virtualenv
@@ -23,9 +23,12 @@ Run the script against a cluster to get a detailed report of license usage and n
 python main.py --es-url https://localhost:9200
 ```
 
-Each time you run the script, a `consolidated_license_usage.yaml` file will be created / updated with the list of `.yml` files that were inspected and the total number of licenses is then calculated.
+Each time you run the script, a `consolidated_license_usage.yaml` file will be created / updated with the list of `.yml` files that were inspected and the total number of billable nodes is then calculated.
 
 # CHANGELOG
+## v0.2.1
+- Wording changed for better clarity
+
 ## v0.2.0
 - Custom CA certificates can now be used for https.
 - New flag -g allows recalculating the global license usage without querying an elasticsearch cluster
