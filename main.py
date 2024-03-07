@@ -18,7 +18,14 @@ def dump_cluster_license(es_url, user, password, ca, insecure):
 
     # Make a request to the _license and _nodes endpoint.
     response = session.get(f"{es_url}/_license", verify=verification)
+
+    # Check for license type before proceeding any further.
+    if response.json()["license"]["type"] not in ["platinum", "basic", "gold"]:
+        print("License types other than basic or platinum are not supported")
+        exit(1)
+
     response_nodes = session.get(f"{es_url}/_nodes", verify=verification)
+
 
     # Get the cluster name from the _nodes response.
     cluster_name = response_nodes.json()["cluster_name"]
@@ -51,6 +58,8 @@ def consolidate_cluster_info():
 
     # Filter the list of files to only include .yml files.
     yml_files = [file for file in files if file.endswith(".yml")]
+    if len(yml_files) <= 1:
+        exit(0)
 
     # Create a dictionary to store the consolidated license usage.
     consolidated_license_usage = {
